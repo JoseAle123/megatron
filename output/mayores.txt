@@ -1,0 +1,5 @@
+PassengerId#Survived#Pclass#Name#Sex#Age#SibSp#Parch#Ticket#Fare#Cabin#Embarked
+7#0#1#"McCarthy, Mr. Timothy J"#male#54#0#0#17463#518.625#E46#S
+12#1#1#"Bonnell, Miss. Elizabeth"#female#58#0#0#113783#26.55#C103#S
+16#1#2#"Hewlett, Mrs. (Mary D Kingcome) "#female#55#0#0#248706#16#null#S
+34#0#2#"Wheadon, Mr. Edward H"#male#66#0#0#C.A. 24579#10.5#null#S

@@ -49,3 +49,4 @@ PassengerId#Survived#Pclass#Name#Sex#Age#SibSp#Parch#Ticket#Fare#Cabin#Embarked
 48#1#3#"O'Driscoll, Miss. Bridget"#female#null#0#0#14311#7.75#null#Q
 49#0#3#"Samaan, Mr. Youssef"#male#null#2#0#2662#216.792#null#C
 50#0#3#"Arnold-Franchi, Mrs. Josef (Josefine Franchi)"#female#18#1#0#349237#17.8#null#S
+12#11#10#9#8#7#6#5#4#3#2#1#

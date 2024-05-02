@@ -229,19 +229,20 @@ void agregarNuevoRegistro(string nombreTabla, const string& atributos) {
 }
 
 vector<string> split(const string& s, char delimiter) {
-    vector<string> partes;
+    vector<string> tokens;
     stringstream ss(s);
-    string parte;
-    while (getline(ss, parte, delimiter)) {
-        partes.push_back(parte);
+    string token;
+    while (getline(ss, token, delimiter)) {
+        tokens.push_back(token);
     }
-    return partes;
+    return tokens;
 }
 
 void ConsultaEdad(const string& nombre_archivo_entrada) {
     ifstream archivo_entrada(nombre_archivo_entrada);
     string nombre_archivo_salida;
-    cout << "escriba el archivo de salida: "; cin >> nombre_archivo_salida;
+    cout << "Escriba el nombre del archivo de salida: ";
+    cin >> nombre_archivo_salida;
 
     ofstream archivo_salida(nombre_archivo_salida);
 
@@ -250,49 +251,60 @@ void ConsultaEdad(const string& nombre_archivo_entrada) {
         return;
     }
 
+    int limiteEdad;
+    string operador;
+    cout << "Ingrese el operador '>' '<' '>=' '<=': "; cin >> operador;
+    cout << "ingrese el limite de edad: "; cin >> limiteEdad;
+
+    if (operador != ">" && operador != ">=" && operador != "<" && operador != "<=") {
+        cerr << "Operador no válido. Por favor, use '>' o '>='." << endl;
+        return;
+    }
+
     string linea;
     // Leer la primera línea del archivo de entrada (encabezado) y escribirla en el archivo de salida
     getline(archivo_entrada, linea);
     archivo_salida << linea << endl;
 
-    // Leer el resto de las líneas y filtrar las personas mayores de 20 años
-    while (getline(archivo_entrada, linea)) {
-        vector<string> campos = split(linea, '#');
-        int edad = -1;
-        string nombre;
-
-        // Buscar dinámicamente la edad y el nombre en los campos
-        for (const string& campo : campos) {
-            stringstream ss(campo);
-            int numero;
-            if (ss >> numero) {
-                edad = numero;
-            } else {
-                nombre = campo;
-            }
-        }
-
-        // Escribir la línea en el archivo de salida si la edad es mayor de 20
-        if (edad > 20) {
-            archivo_salida << nombre << "#";
-            for (size_t i = 1; i < campos.size(); ++i) {
-                archivo_salida << campos[i];
-                if (i < campos.size() - 1) {
-                    archivo_salida << "#";
-                }
-            }
-            archivo_salida << endl;
+    // Encontrar el índice de la columna "Age" en el encabezado
+    vector<string> encabezado = split(linea, '#');
+    int indiceEdad = -1;
+    for (size_t i = 0; i < encabezado.size(); ++i) {
+        if (encabezado[i] == "Age") {
+            indiceEdad = static_cast<int>(i);
+            break;
         }
     }
 
-    cout << "Se han guardado los nombres y otros atributos de las personas mayores de 20 en el archivo '" << nombre_archivo_salida << "'" << endl;
+    if (indiceEdad == -1) {
+        cerr << "No se encontró la columna 'Age' en el encabezado." << endl;
+        return;
+    }
+
+    // Leer el resto de las líneas y filtrar las personas según la edad y el operador seleccionado
+    while (getline(archivo_entrada, linea)) {
+        vector<string> campos = split(linea, '#');
+        if (campos.size() <= static_cast<size_t>(indiceEdad)) {
+            cerr << "Error en el formato de la línea." << endl;
+            continue;
+        }
+
+        try {
+            int edad = stoi(campos[indiceEdad]);
+            if ((operador == ">" && edad > limiteEdad) || (operador == ">=" && edad >= limiteEdad) ||
+                (operador == "<" && edad < limiteEdad) || (operador == "<=" && edad <= limiteEdad)) {
+                archivo_salida << linea << endl;
+            }
+        } catch (const invalid_argument&) {
+            cerr << "Error al convertir la edad a entero." << endl;
+        }
+    }
+
+    cout << "Se han guardado los datos según el filtro especificado en el archivo '" << nombre_archivo_salida << "'" << endl;
 
     archivo_entrada.close();
     archivo_salida.close();
 }
-
-
-
 
 int main() {
     vector<Tabla> tablas = Tabla::cargarTablasDesdeArchivo("esquemas.txt");
@@ -371,7 +383,7 @@ int main() {
                 switch (opcion2)
                 {
                 case 1:
-                    cout << "ingrese el archivo de entrada"; cin >> ArchvivoEntrada;
+                    cout << "ingrese el archivo de entrada: "; cin >> ArchvivoEntrada;
                     ConsultaEdad(ArchvivoEntrada);
                     break;
 
