@@ -1,4 +1,0 @@
-PassengerId#Survived#Pclass#Name#Sex#Age#SibSp#Parch#Ticket#Fare#Cabin#Embarked
-4#1#1#"Futrelle, Mrs. Jacques Heath (Lily May Peel)"#female#60#1#0#113803#53.1#C123#S
-5#0#3#"Allen, Mr. William Henry"#male#70#0#0#373450#08.05#null#S
-9#1#3#"Johnson, Mrs. Oscar W (Elisabeth Vilhelmina Berg)"#female#80#0#2#347742#11.1333#null#S

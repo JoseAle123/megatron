@@ -50,3 +50,4 @@ PassengerId#Survived#Pclass#Name#Sex#Age#SibSp#Parch#Ticket#Fare#Cabin#Embarked
 49#0#3#"Samaan, Mr. Youssef"#male#null#2#0#2662#216.792#null#C
 50#0#3#"Arnold-Franchi, Mrs. Josef (Josefine Franchi)"#female#18#1#0#349237#17.8#null#S
 12#11#10#9#8#7#6#5#4#3#2#1#
+26#25#24#23#22#21#20#19#18#17#16#15

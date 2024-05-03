@@ -1,2 +1,3 @@
 Titanic#PassengerId#INT#Survived#INT#Pclass#INT#Name#STRING#Sex#STRING#Age#INT#SibSp#INT#Parch#INT#Ticket#STRING#Fare#FLOAT#Cabin#STRING#Embarked#CHAR#
 ingenieros#nombre#string#peso#int#
+medicos#nombre#string#peso#int#

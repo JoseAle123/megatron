@@ -7,4 +7,7 @@ PassengerId#Survived#Pclass#Name#Sex#Age#SibSp#Parch#Ticket#Fare#Cabin#Embarked
 6#0#3#"Moran, Mr. James"#male#null#0#0#330877#8.4583#null#Q
 7#0#1#"McCarthy, Mr. Timothy J"#male#10#0#0#17463#518.625#E46#S
 8#0#3#"Palsson, Master. Gosta Leonard"#male#2#3#1#349909#21.075#null#S
-9#1#3#"Johnson, Mrs. Oscar W (Elisabeth Vilhelmina Berg)"#female#80#0#2#347742#11.1333#null#S
+9#1#3#"Johnson, Mrs. Oscar W (Elisabeth Vilhelmina Berg)"#female#80#0#2#347742#11.1333#null#S14#30#qw#qw#qw#qw#qw#qw#qw#qw#qw#qw
+13#12#11#10#9#8#7#6#5#4#3#2
+26#25#24#2#22#21#20#19#18#17#16#15
+60#50#40#30#20#10#5#4#3#2#1#0
