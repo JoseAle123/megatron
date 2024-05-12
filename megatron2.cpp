@@ -169,7 +169,7 @@ public:
                         cumpleFiltro = (edad <= limiteEdad);
                     } else {
                         cerr << "Operador no válido." << endl;
-                        return;
+                        return; 
                     }
                     break; // Salir del bucle al encontrar la edad
                 }

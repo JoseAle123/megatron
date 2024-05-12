@@ -1,0 +1,64 @@
+Registro 1:
+- ID: 101 (4 bytes)
+- Nombre: "Juan Pérez" (10 bytes)
+- Dirección: "Calle Principal" (15 bytes)
+- Espacio total ocupado: 29 bytes
+- Ubicación en el bloque: Inicio = 0 bytes, Tamaño = 29 bytes
+
+Registro 2:
+- ID: 102 (4 bytes)
+- Nombre: "María García" (12 bytes)
+- Dirección: "Avenida Central" (16 bytes)
+- Espacio total ocupado: 32 bytes
+- Ubicación en el bloque: Inicio = 29 bytes, Tamaño = 32 bytes
+
+Registro 3:
+- ID: 103 (4 bytes)
+- Nombre: "Pedro Martínez" (14 bytes)
+- Dirección: "Calle Secundaria" (17 bytes)
+- Espacio total ocupado: 35 bytes
+- Ubicación en el bloque: Inicio = 61 bytes, Tamaño = 35 bytes
+
+Espacio libre restante en el bloque: 1000 - (29 + 32 + 35) = 904 bytes
+
+
+
+Los atributos de longitud variable se aplican cuando los datos que se van a almacenar no tienen una longitud 
+fija predefinida, es decir, pueden variar en tamaño. Estos atributos se utilizan para optimizar el almacenamiento 
+de datos cuando se desconoce de antemano cuánto espacio se necesitará para un determinado valor.
+
+Por ejemplo, en el registro que mencioné anteriormente, el atributo de longitud variable para la dirección tiene un 
+desplazamiento de 39 y una longitud de 17. Esto significa que la dirección comienza en el byte 39 del registro y ocupa 
+17 bytes de espacio. De manera similar, el atributo de longitud variable para el número de teléfono tiene un 
+desplazamiento de 56 y una longitud de 12, lo que indica que el número de teléfono comienza en el byte 56 y ocupa 
+12 bytes de espacio.
+
+
+Encabezado actualizado:
+- Número de registros: 4
+- Espacio libre restante: 8 bytes
+- Array de ubicación y tamaño de registros:
+  - Registro 1: Ubicación: 10 bytes, Tamaño: 15 bytes
+  - Registro 2: Ubicación: 30 bytes, Tamaño: 10 bytes
+  - Nuevo Registro: Ubicación: 40 bytes, Tamaño: 12 bytes
+  - Registro 3: Ubicación: 60 bytes, Tamaño: 18 bytes
+
+
+para acceder a un registro
+
+
+ubicación_del_registro_empleado1 = ptr_empleado1.ubicación_del_registro
+tamaño_del_registro_empleado1 = ptr_empleado1.tamaño_del_registro
+
+# Ahora podemos acceder al registro del empleado 1 en el bloque de memoria utilizando la ubicación y el tamaño obtenidos.
+registro_empleado1 = leer_registro(ubicación_del_registro_empleado1, tamaño_del_registro_empleado1)
+
+// para busqueda mas rapido de los bloques libres
+
+Bloque 0: [Libre, Libre, Libre, Libre, Libre]
+Bloque 1: [Libre, Libre, Libre, Libre, Libre]
+Bloque 2: [ID: 101, Nombre: Juan, Salario: $3000, Libre, Libre]
+... (hasta el bloque 19)
+
+
+

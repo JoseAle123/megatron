@@ -1,0 +1,4 @@
+nombre#peso
+jose#30
+pedro#16
+jorge#60
