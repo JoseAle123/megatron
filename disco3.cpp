@@ -349,6 +349,8 @@ std::string getSchema(const std::string& schemaFile, std::string fileName);
 int contarAtributos(const std::string& cadena);
 void obtenerTiposDeDato(const std::string& cadena, std::string tiposDato[], int tamano);
 
+int TotalRegistro = 0;
+
 class Registro {
 private:
     int tamanioChar = 1;
@@ -358,6 +360,7 @@ private:
 
 public:
     Registro() {}
+
 
     void calcularTamanio(string campo, string tipoDato) {
         if (tipoDato == "string") {
@@ -377,47 +380,62 @@ public:
         tamanioRegistro = 0;
     }
 
-    int calcularTamanioRegistro(){
-        string nombreArchivo;
-        cout << "ingrese el nombre del Archivo: "; cin >> nombreArchivo;
-        std::ifstream archivo(nombreArchivo);
+    int calcularTamanioRegistro(int numeroRegistro, string nombreArchivo) {
+        ifstream archivo(nombreArchivo);
         string DatosEsquema = getSchema("esquemas.txt", nombreArchivo);
-        cout << DatosEsquema << endl;
 
         int cantidadAtributos = contarAtributos(DatosEsquema);
-
         string tiposDato[cantidadAtributos];
         obtenerTiposDeDato(DatosEsquema, tiposDato, cantidadAtributos);
 
-
-        std::string linea;
+        string linea;
+        int contadorLineas = 0; // Contador de líneas
 
         // Ignorar la primera línea
-        std::getline(archivo, linea);
+        getline(archivo, linea);
 
         // Procesar el resto del archivo
-        int contador = 0;
-        while (std::getline(archivo, linea)) {
-            std::istringstream ss(linea);
-            std::string palabra;
+        while (getline(archivo, linea)) {
+            if (contadorLineas == numeroRegistro) { // Si es el registro deseado
+                istringstream ss(linea);
+                string palabra;
+                int contador = 0; // Reiniciar el contador en cada línea
 
-            // Leer palabra por palabra
-            while (std::getline(ss, palabra, '#')) {
-                if(contador >= cantidadAtributos){
-                    contador = 0;
+                // Leer palabra por palabra
+                while (getline(ss, palabra, '#')) {
+                    if (contador >= cantidadAtributos) {
+                        contador = 0;
+                    }
+                    calcularTamanio(palabra, tiposDato[contador]);
+                    contador++;
                 }
-                calcularTamanio(palabra, tiposDato[contador]);
-                cout << contador <<" "<<palabra << endl;
-                contador++;
+                archivo.close();
+                return tamanioRegistro; // Devolver el tamaño del registro
             }
-            
+            contadorLineas++; // Incrementar el contador de líneas
         }
         archivo.close();
-        return tamanioRegistro;
+        return -1; // Si no se encontró el registro
+    }
 
-
-    };
 };
+
+int contarLineasArchivo(const std::string& nombreArchivo) {
+    std::ifstream archivo(nombreArchivo);
+    std::string linea;
+    int contador = 0;
+
+    if (archivo.is_open()) {
+           while (std::getline(archivo, linea)) {
+                contador++;
+           }
+          archivo.close();
+     } else {
+        std::cerr << "No se pudo abrir el archivo " << nombreArchivo << std::endl;
+     }
+
+    return contador - 1;
+}
 
 int contarAtributos(const std::string& cadena) {
     std::istringstream ss(cadena);
@@ -472,6 +490,7 @@ string getSchema(const string& schemaFile, string fileName) {
 int main() {
 
     DiscoDuro discoDuro(0, 0, 0, 0, 0); // Se inicializa con valores predeterminados, los cuales se sobrescribirán en la opción 1
+    Registro *registros = nullptr;
 
     int opcion;
     do {
@@ -518,9 +537,18 @@ int main() {
                 break;
             }
             case 5:{
-                Registro registro;
-                int tamanio = registro.calcularTamanioRegistro();
-                cout << tamanio << endl;
+                string nombreArchivo;
+                cout << "ingrese nombre de Archivo: "; cin >> nombreArchivo;
+                int cantidadRegistros = contarLineasArchivo(nombreArchivo);
+                TotalRegistro = cantidadRegistros;
+                cout << cantidadRegistros << endl;
+                registros = new Registro[cantidadRegistros];
+                string DatosEsquema = getSchema("esquemas.txt", nombreArchivo);
+                cout << DatosEsquema << endl;
+                for(int i = 0; i < cantidadRegistros; i++){
+                    cout << "tamanio del registro " << i + 1 << ": ";
+                    cout << registros[i].calcularTamanioRegistro(i, nombreArchivo) << endl;
+                }
                 break;
             }
             default:

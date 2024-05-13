@@ -1,0 +1,6 @@
+nombre#peso#apellido
+jose#30#a
+pedr#16#ab
+jorg#60#abc
+Jose#30#abcd
+kenn#70#abcde

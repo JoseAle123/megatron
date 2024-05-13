@@ -2,3 +2,5 @@ nombre#peso
 jose#30
 pedro#16
 jorge#60
+Jose paredes#30
+kenny Borja#70
