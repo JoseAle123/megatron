@@ -23,6 +23,10 @@ public:
     int getTamanio() const {
         return tamanio;
     }
+
+    void RestarPeso(int peso){
+        tamanio = tamanio - peso;
+    }
 };
 
 class Superficie {
@@ -75,6 +79,10 @@ public:
     int getTamanioSector() const {
         return (numeroSectores > 0) ? sectores[0].getTamanio() : 0;
     }
+
+    Sector& getSector(int index) const {
+        return sectores[index];
+    }
 };
 
 class Pistas {
@@ -121,6 +129,8 @@ public:
     int getNumeroSuperficies() const {
         return numeroSuperficies;
     }
+
+    
 
     Superficie& getSuperficie(int index) const {
         return superficies[index];
@@ -236,6 +246,11 @@ public:
             }
         }
     }
+    
+    void calcularPeso(){
+        tamanio = getNumeroPlatos() * platos[0].getNumeroPistas() * platos[0].getPista(0).getNumeroSuperficies()
+        * platos[0].getPista(0).getSuperficie(0).getNumeroSectores() * platos[0].getPista(0).getSuperficie(0).getTamanioSector();
+    }
 
     void guardarInformacion() {
         std::ofstream archivo("informacion_disco.txt", std::ofstream::out | std::ofstream::trunc);
@@ -253,6 +268,32 @@ public:
         }
     }
 
+    void guardarRegistroSectores(const std::string& linea, int peso) {
+        for (int i = 0; i < numeroPlatos; i++) {
+            for (int j = 0; j < platos[i].getNumeroPistas(); j++) {
+                for (int k = 0; k < platos[i].getPista(j).getNumeroSuperficies(); k++) {
+                    for (int l = 0; l < platos[i].getPista(j).getSuperficie(k).getNumeroSectores(); l++) {
+                        int tamanioSector = platos[i].getPista(j).getSuperficie(k).getSector(l).getTamanio();
+                        if (peso <= tamanioSector) { // El sector tiene espacio para el registro
+                            // Crear la ruta del archivo donde se guardará el registro
+                            std::stringstream rutaArchivo;
+                            rutaArchivo << "Plato" << std::setw(2) << std::setfill('0') << i + 1 << "/Pista" << std::setw(2) << std::setfill('0') 
+                            << j + 1 << "/Superficie" << std::setw(2) << std::setfill('0') << k + 1 << "/Sector" << std::setw(2) 
+                            << std::setfill('0') << l + 1 << "/registro.txt";
+
+                            std::ofstream archivo(rutaArchivo.str(), std::ios::app);
+                            archivo << linea << std::endl;
+                            platos[i].getPista(j).getSuperficie(k).getSector(l).RestarPeso(peso);
+                            archivo.close();
+                            return; // Salir de la función después de guardar el registro
+                        }
+                    }
+                }
+            }
+        }
+        // Si llegamos aquí, significa que no se encontró ningún sector disponible
+        std::cout << "No hay sectores disponibles para guardar el registro." << std::endl;
+    }
 
     void cargarInformacionDesdeArchivo(const std::string& nombreArchivo, DiscoDuro& discoDuro) {
         std::ifstream archivo(nombreArchivo);
@@ -353,6 +394,7 @@ int TotalRegistro = 0;
 
 class Registro {
 private:
+    int id;
     int tamanioChar = 1;
     int tamanioInt = 4;
     int tamanioFloat = 4;
@@ -370,6 +412,18 @@ public:
         } else if (tipoDato == "float") {
             tamanioRegistro += tamanioFloat;
         }
+    }
+
+    void setTamanioRegistro(int numero){
+        this->tamanioRegistro = numero;
+    }
+
+    void setId(int id){
+        this->id = id;
+    }
+
+    int getId(){
+        return id;
     }
 
     int getTamanioRegistro() {
@@ -486,6 +540,52 @@ string getSchema(const string& schemaFile, string fileName) {
     return "";
 }
 
+string leerLineaEspecifica(const string& nombreArchivo, int numeroLinea) {
+    ifstream archivo(nombreArchivo);
+    string lineaDeseada;
+    string linea;
+    int numLineaActual = 1;
+    
+    // Verificar si se pudo abrir el archivo
+    if (!archivo.is_open()) {
+        return "No se pudo abrir el archivo.";
+    }
+    
+    // Leer y guardar la línea deseada en un string
+    while (getline(archivo, linea)) {
+        if (numLineaActual >= 2 && numLineaActual == numeroLinea) {
+            lineaDeseada = linea;
+            break;
+        }
+        numLineaActual++;
+    }
+    
+    // Cerrar el archivo
+    archivo.close();
+    
+    if (lineaDeseada.empty()) {
+        return "No se encontró la línea especificada.";
+    } else {
+        return lineaDeseada;
+    }
+}
+
+class Bloque{
+    private:
+        int tamanio;
+    public:
+        void Espacio(){
+            cout << "espacio sobrante: " << tamanio;
+        }
+        void setTamanio(int tamanio){
+            this->tamanio = tamanio;
+        }
+        void CrearDicionario(DiscoDuro DiscoDuro){
+
+        }
+
+};
+
 
 int main() {
 
@@ -499,6 +599,7 @@ int main() {
         cout << "Ingrese 3 si quiere mostrar los datos del disco" << endl;
         cout << "Ingrese 4 para crear carpetas" << endl;
         cout << "Ingrese 5 para crear registros" << endl;
+        cout << "Ingrese 6 para crear bloques" << endl;
         cout << "Opción: ";
         cin >> opcion;
         switch (opcion) {
@@ -508,18 +609,17 @@ int main() {
                 int numSuperficies;
                 int numSectores;
                 int tamSector;
-                int tamDisco;
+
 
                 cout << "Ingrese el número de platos: "; cin >> numPlatos;
                 cout << "Ingrese el número de pistas: "; cin >> numPistas;
                 cout << "Ingrese el número de superficies: "; cin >> numSuperficies;
                 cout << "Ingrese el número de sectores: "; cin >> numSectores;
                 cout << "Ingrese el tamaño del sector: ";  cin >> tamSector;
-                cout << "Ingre el tamanio del disco: "; cin >> tamDisco;
 
                 // Crear una instancia de DiscoDuro
                 discoDuro = DiscoDuro(numPlatos, numPistas, numSuperficies, numSectores, tamSector);
-                discoDuro.setTamanio(tamDisco);
+                discoDuro.calcularPeso();
                 discoDuro.guardarInformacion();
                 break;
             }
@@ -540,21 +640,58 @@ int main() {
                 string nombreArchivo;
                 cout << "ingrese nombre de Archivo: "; cin >> nombreArchivo;
                 int cantidadRegistros = contarLineasArchivo(nombreArchivo);
-                TotalRegistro = cantidadRegistros;
                 cout << cantidadRegistros << endl;
-                registros = new Registro[cantidadRegistros];
-                string DatosEsquema = getSchema("esquemas.txt", nombreArchivo);
-                cout << DatosEsquema << endl;
-                for(int i = 0; i < cantidadRegistros; i++){
-                    cout << "tamanio del registro " << i + 1 << ": ";
-                    cout << registros[i].calcularTamanioRegistro(i, nombreArchivo) << endl;
+                if(registros == nullptr){
+                    registros = new Registro[cantidadRegistros];
+                    string DatosEsquema = getSchema("esquemas.txt", nombreArchivo);
+                    cout << DatosEsquema << endl;
+                    for(int i = 0; i < cantidadRegistros; i++){
+                        string lineaArchivo = leerLineaEspecifica(nombreArchivo, i + 2);
+                        int tamañoRegistro = registros[i].calcularTamanioRegistro(i, nombreArchivo);
+                        discoDuro.guardarRegistroSectores(lineaArchivo, tamañoRegistro);
+                        registros[i].setId(i + 1);
+                        cout << "tamanio del registro " << i + 1 << ": ";
+                        cout << tamañoRegistro << endl;
+                    }
                 }
+                else{
+                    Registro *registros2 = new Registro[cantidadRegistros + TotalRegistro];
+                    for(int i = 0; i < TotalRegistro; i++){
+                        registros2[i].setId(registros[i].getId());
+                        registros2[i].setTamanioRegistro(registros[i].getTamanioRegistro());
+                    }
+                    for(int i = TotalRegistro; i < TotalRegistro + cantidadRegistros; i++){
+                        string lineaArchivo = leerLineaEspecifica(nombreArchivo, i + 2 - TotalRegistro);
+                        int tamañoRegistro = registros2[i].calcularTamanioRegistro(i - TotalRegistro, nombreArchivo);
+            
+                        discoDuro.guardarRegistroSectores(lineaArchivo, tamañoRegistro);
+                        registros2[i].setId(i + 1);
+                    }
+                    for(int i = 0; i < TotalRegistro + cantidadRegistros; i++ ){
+                        cout << "id del regisro: " << registros2[i].getId() << endl;
+                        cout << "tamanio del registro " << i + 1 << ": ";
+                        cout << registros2[i].getTamanioRegistro() << endl;
+                    }
+                    registros = registros2;
+                    delete[] registros2;
+                }
+                
+                TotalRegistro = TotalRegistro + cantidadRegistros;
+                
                 break;
+            }
+            case 6:{
+                int numeroBloques, tamanioBloque;
+                cout << "ingrese cuantos bloques quiere: "; cin >> numeroBloques;
+                Bloque *bloques = new Bloque[numeroBloques];
+                for(int i = 0; i < numeroBloques; i++){
+                    bloques[i].setTamanio(tamanioBloque);
+                }
             }
             default:
                 break;
         }
-    } while (opcion != 6);
+    } while (opcion != 7);
     
 
     
